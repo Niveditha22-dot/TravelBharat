@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search – TravelBharat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --saffron: #FF6B2B;
+      --deep: #1A0A00;
+      --gold: #E8A838;
+      --cream: #FDF6EC;
+      --moss: #3D6B4F;
+      --text: #2C1A0E;
+      --muted: #8C6D52;
+      --light: #F5EDE0;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.1rem 4rem;
+      background: rgba(253,246,236,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(232,168,56,0.2);
+    }
+    .logo {
+      font-family: 'Yeseva One', serif;
+      font-size: 1.5rem; color: var(--saffron); text-decoration: none;
+    }
+    .logo span { color: var(--moss); font-style: italic; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--saffron); }
+
+    /* SEARCH HERO */
+    .search-hero {
+      margin-top: 68px;
+      background: var(--deep);
+      padding: 3rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .search-hero::before {
+      content: '🔍';
+      position: absolute; right: 4rem; top: 50%;
+      transform: translateY(-50%);
+      font-size: 12rem; opacity: 0.05;
+    }
+    .search-hero h1 {
+      font-family: 'Yeseva One', serif;
+      font-size: 2rem; color: white;
+      margin-bottom: 0.4rem;
+    }
+    .search-hero h1 span { color: var(--gold); }
+    .search-hero p { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-bottom: 1.8rem; }
+
+    .search-bar {
+      display: flex; align-items: center; gap: 0.8rem;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 2rem; padding: 0.7rem 0.7rem 0.7rem 1.8rem;
+      max-width: 700px; transition: border-color 0.2s;
+    }
+    .search-bar:focus-within { border-color: var(--gold); }
+    .search-bar input {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: white; font-size: 1rem;
+      font-family: 'Josefin Sans', sans-serif;
+    }
+    .search-bar input::placeholder { color: rgba(255,255,255,0.35); }
+    .search-bar button {
+      background: var(--saffron); color: white;
+      border: none; border-radius: 1.5rem;
+      padding: 0.65rem 1.6rem; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif;
+      transition: background 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .search-bar button:hover { background: var(--gold); }
+
+    /* QUICK SEARCH TAGS */
+    .quick-tags {
+      display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.2rem;
+    }
+    .qtag {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.6);
+      font-size: 0.75rem; padding: 0.3rem 0.9rem;
+      border-radius: 2rem; cursor: pointer;
+      transition: all 0.2s; font-family: 'Josefin Sans', sans-serif;
+    }
+    .qtag:hover { background: rgba(255,107,43,0.2); border-color: var(--saffron); color: white; }
+
+    /* MAIN */
+    .main-wrap {
+      max-width: 1200px; margin: 0 auto;
+      padding: 2.5rem 4rem;
+      display: grid; grid-template-columns: 260px 1fr;
+      gap: 2.5rem;
+    }
+
+    /* FILTERS SIDEBAR */
+    .filter-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+    .filter-card {
+      background: white; border-radius: 1.2rem; padding: 1.3rem;
+      border: 1.5px solid rgba(232,168,56,0.12);
+    }
+    .filter-card-title {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1rem;
+    }
+    .filter-option {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.5rem 0; cursor: pointer;
+      border-bottom: 1px solid rgba(140,109,82,0.07);
+      transition: all 0.2s;
+    }
+    .filter-option:last-child { border-bottom: none; }
+    .filter-option:hover .fo-label { color: var(--saffron); }
+    .fo-check {
+      width: 16px; height: 16px; border-radius: 4px;
+      border: 1.5px solid rgba(140,109,82,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s; cursor: pointer;
+    }
+    .fo-check.checked { background: var(--saffron); border-color: var(--saffron); }
+    .fo-check.checked::after { content: '✓'; color: white; font-size: 0.65rem; font-weight: 700; }
+    .fo-label { font-size: 0.85rem; color: var(--text); flex: 1; }
+    .fo-count { font-size: 0.72rem; color: var(--muted); }
+
+    .clear-btn {
+      width: 100%; background: none; border: 1.5px solid rgba(255,107,43,0.3);
+      color: var(--saffron); border-radius: 2rem;
+      padding: 0.6rem; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; font-family: 'Josefin Sans', sans-serif;
+      transition: all 0.2s; letter-spacing: 0.5px;
+    }
+    .clear-btn:hover { background: var(--saffron); color: white; }
+
+    /* RESULTS */
+    .results-col { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .results-header {
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .results-count {
+      font-size: 0.85rem; color: var(--muted);
+    }
+    .results-count strong { color: var(--saffron); font-size: 1rem; }
+    .sort-wrap { display: flex; align-items: center; gap: 0.6rem; }
+    .sort-label { font-size: 0.78rem; color: var(--muted); }
+    .sort-select {
+      background: white; border: 1.5px solid rgba(232,168,56,0.2);
+      border-radius: 2rem; padding: 0.4rem 1rem;
+      font-size: 0.8rem; color: var(--text);
+      font-family: 'Josefin Sans', sans-serif;
+      outline: none; cursor: pointer;
+    }
+
+    /* VIEW TOGGLE */
+    .view-toggle { display: flex; gap: 0.4rem; }
+    .vt-btn {
+      width: 34px; height: 34px; border-radius: 0.6rem;
+      border: 1.5px solid rgba(232,168,56,0.2);
+      background: white; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; transition: all 0.2s;
+    }
+    .vt-btn.active { background: var(--saffron); border-color: var(--saffron); }
+
+    /* ACTIVE FILTERS */
+    .active-filters {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+    }
+    .af-label { font-size: 0.75rem; color: var(--muted); }
+    .af-tag {
+      background: rgba(255,107,43,0.1);
+      border: 1px solid rgba(255,107,43,0.2);
+      color: var(--saffron); font-size: 0.75rem;
+      padding: 0.25rem 0.8rem; border-radius: 2rem;
+      display: flex; align-items: center; gap: 0.4rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .af-tag:hover { background: rgba(255,107,43,0.2); }
+    .af-tag span { font-size: 0.7rem; opacity: 0.7; }
+
+    /* RESULT CARDS */
+    .results-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+    .result-card {
+      background: white; border-radius: 1.3rem;
+      display: grid; grid-template-columns: 160px 1fr;
+      overflow: hidden; cursor: pointer;
+      text-decoration: none; color: inherit;
+      border: 1.5px solid rgba(232,168,56,0.1);
+      transition: all 0.3s;
+    }
+    .result-card:hover {
+      transform: translateX(4px);
+      box-shadow: 0 8px 32px rgba(255,107,43,0.1);
+      border-color: rgba(255,107,43,0.25);
+    }
+    .rc-img {
+      height: 100%; min-height: 130px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem; position: relative;
+    }
+    .rc-cat {
+      position: absolute; bottom: 0.6rem; left: 0.6rem;
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      padding: 0.2rem 0.6rem; border-radius: 1rem;
+      background: rgba(255,255,255,0.9);
+      color: var(--saffron);
+    }
+    .rc-body { padding: 1.3rem; display: flex; flex-direction: column; justify-content: center; }
+    .rc-state {
+      font-size: 0.72rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 0.3rem;
+    }
+    .rc-name {
+      font-family: 'Yeseva One', serif;
+      font-size: 1.2rem; color: var(--deep);
+      margin-bottom: 0.4rem;
+    }
+    .rc-desc {
+      font-size: 0.8rem; color: var(--muted);
+      line-height: 1.5; margin-bottom: 0.8rem;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .rc-footer { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+    .rc-tag {
+      font-size: 0.7rem; padding: 0.2rem 0.6rem;
+      border-radius: 1rem; background: var(--light);
+      color: var(--muted);
+    }
+    .rc-time {
+      font-size: 0.7rem; color: var(--moss);
+      background: rgba(61,107,79,0.1);
+      padding: 0.2rem 0.6rem; border-radius: 1rem;
+    }
+    .rc-arrow {
+      margin-left: auto; color: var(--saffron);
+      font-size: 1rem; transition: transform 0.2s;
+    }
+    .result-card:hover .rc-arrow { transform: translateX(4px); }
+
+    /* NO RESULTS */
+    .no-results {
+      text-align: center; padding: 4rem 2rem;
+      display: none;
+    }
+    .no-results.show { display: block; }
+    .no-results span { font-size: 4rem; display: block; margin-bottom: 1rem; }
+    .no-results h3 {
+      font-family: 'Yeseva One', serif;
+      font-size: 1.5rem; color: var(--deep); margin-bottom: 0.5rem;
+    }
+    .no-results p { color: var(--muted); font-size: 0.9rem; }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex; justify-content: center; gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .pg-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1.5px solid rgba(140,109,82,0.2);
+      background: white; color: var(--text); font-size: 0.82rem;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Josefin Sans', sans-serif;
+    }
+    .pg-btn:hover, .pg-btn.active {
+      background: var(--saffron); color: white; border-color: var(--saffron);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .result-card {
+      opacity: 0; transform: translateY(16px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .result-card:nth-child(1) { animation-delay: 0.05s; }
+    .result-card:nth-child(2) { animation-delay: 0.12s; }
+    .result-card:nth-child(3) { animation-delay: 0.19s; }
+    .result-card:nth-child(4) { animation-delay: 0.26s; }
+    .result-card:nth-child(5) { animation-delay: 0.33s; }
+    .result-card:nth-child(6) { animation-delay: 0.4s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .search-hero { padding: 2rem 1.5rem; }
+      .main-wrap { grid-template-columns: 1fr; padding: 1.5rem; }
+      .filter-panel { display: none; }
+      .result-card { grid-template-columns: 120px 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">Travel<span>Bharat</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="states.html">States</a></li>
+      <li><a href="search.html" style="color:var(--saffron)">Search</a></li>
+    </ul>
+  </nav>
+
+  <!-- SEARCH HERO -->
+  <section class="search-hero">
+    <h1>Explore <span id="query-display">India</span></h1>
+    <p id="result-sub">Discover tourist places, states, cities and more</p>
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" id="search-input" placeholder="Try 'Rajasthan', 'heritage forts', 'Kerala beaches'..." value="Rajasthan"/>
+      <button onclick="doSearch()">Search</button>
+    </div>
+    <div class="quick-tags">
+      <span class="qtag" onclick="setQuery('Taj Mahal')">🕌 Taj Mahal</span>
+      <span class="qtag" onclick="setQuery('Kerala')">🌴 Kerala</span>
+      <span class="qtag" onclick="setQuery('Heritage')">🏛️ Heritage</span>
+      <span class="qtag" onclick="setQuery('Adventure')">🧗 Adventure</span>
+      <span class="qtag" onclick="setQuery('Goa beaches')">🌊 Goa Beaches</span>
+      <span class="qtag" onclick="setQuery('Himalaya')">🏔️ Himalaya</span>
+      <span class="qtag" onclick="setQuery('Religious')">🕌 Religious</span>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <div class="main-wrap">
+
+    <!-- FILTER PANEL -->
+    <aside class="filter-panel">
+
+      <div class="filter-card">
+        <div class="filter-card-title">Category</div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check checked"></div>
+          <span class="fo-label">🏛️ Heritage</span>
+          <span class="fo-count">120</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check checked"></div>
+          <span class="fo-label">🌿 Nature</span>
+          <span class="fo-count">180</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">🕌 Religious</span>
+          <span class="fo-count">150</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">🧗 Adventure</span>
+          <span class="fo-count">90</span>
+        </div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-card-title">State</div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check checked"></div>
+          <span class="fo-label">Rajasthan</span>
+          <span class="fo-count">42</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">Kerala</span>
+          <span class="fo-count">38</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">Himachal Pradesh</span>
+          <span class="fo-count">29</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">Uttar Pradesh</span>
+          <span class="fo-count">55</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">Goa</span>
+          <span class="fo-count">18</span>
+        </div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-card-title">Best Time</div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">🌸 Spring (Mar–May)</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check checked"></div>
+          <span class="fo-label">🍂 Winter (Oct–Feb)</span>
+        </div>
+        <div class="filter-option" onclick="toggleFilter(this)">
+          <div class="fo-check"></div>
+          <span class="fo-label">🌧️ Monsoon (Jun–Sep)</span>
+        </div>
+      </div>
+
+      <button class="clear-btn" onclick="clearFilters()">✕ Clear All Filters</button>
+
+    </aside>
+
+    <!-- RESULTS -->
+    <div class="results-col">
+
+      <!-- HEADER -->
+      <div class="results-header">
+        <div class="results-count">Showing <strong id="count">8</strong> results for "<span id="query-tag">Rajasthan</span>"</div>
+        <div style="display:flex;gap:1rem;align-items:center;">
+          <div class="sort-wrap">
+            <span class="sort-label">Sort:</span>
+            <select class="sort-select">
+              <option>Most Popular</option>
+              <option>A – Z</option>
+              <option>Best Time: Now</option>
+            </select>
+          </div>
+          <div class="view-toggle">
+            <button class="vt-btn active">☰</button>
+            <button class="vt-btn">⊞</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE FILTERS -->
+      <div class="active-filters">
+        <span class="af-label">Active:</span>
+        <span class="af-tag">🏛️ Heritage <span>✕</span></span>
+        <span class="af-tag">🌿 Nature <span>✕</span></span>
+        <span class="af-tag">Rajasthan <span>✕</span></span>
+        <span class="af-tag">❄️ Winter <span>✕</span></span>
+      </div>
+
+      <!-- RESULTS GRID -->
+      <div class="results-grid" id="results-grid">
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#FF6B2B22,#E8A83833)">
+            🏯 <span class="rc-cat">Heritage</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Jaipur, Rajasthan</div>
+            <div class="rc-name">Amber Fort</div>
+            <div class="rc-desc">A magnificent Rajput-Mughal hilltop fortress overlooking Maota Lake, built in 1592 by Raja Man Singh I.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">UNESCO</span>
+              <span class="rc-time">🗓️ Oct – Feb</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#E8A83822,#FF6B2B11)">
+            🏙️ <span class="rc-cat">Heritage</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Jaipur, Rajasthan</div>
+            <div class="rc-name">Hawa Mahal</div>
+            <div class="rc-desc">The iconic Palace of Winds featuring 953 small windows, built so royal ladies could observe street life.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">Iconic</span>
+              <span class="rc-time">🗓️ Oct – Mar</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#3D6B4F22,#1A0A0011)">
+            🌊 <span class="rc-cat" style="color:var(--moss)">Nature</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Udaipur, Rajasthan</div>
+            <div class="rc-name">Lake Pichola</div>
+            <div class="rc-desc">A serene artificial lake with island palaces, boat rides, and stunning sunset views framed by the Aravalli hills.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">Scenic</span>
+              <span class="rc-time">🗓️ Sep – Mar</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#FF6B2B11,#E8A83822)">
+            🐆 <span class="rc-cat" style="color:var(--moss)">Nature</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Sawai Madhopur, Rajasthan</div>
+            <div class="rc-name">Ranthambore National Park</div>
+            <div class="rc-desc">One of India's best tiger reserves, offering thrilling safaris through ancient ruins and dense jungle.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">Wildlife</span>
+              <span class="rc-time">🗓️ Nov – Jun</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#1A0A0022,#FF6B2B22)">
+            🏜️ <span class="rc-cat" style="color:#D97706">Adventure</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Jaisalmer, Rajasthan</div>
+            <div class="rc-name">Sam Sand Dunes</div>
+            <div class="rc-desc">Golden sand dunes with camel rides, folk performances and magical starlit desert nights under open skies.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">Desert</span>
+              <span class="rc-time">🗓️ Nov – Feb</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#E8A83822,#3D6B4F11)">
+            🏯 <span class="rc-cat">Heritage</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Jodhpur, Rajasthan</div>
+            <div class="rc-name">Mehrangarh Fort</div>
+            <div class="rc-desc">One of India's largest forts, rising 400 feet above the Blue City with stunning panoramic views.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">Iconic</span>
+              <span class="rc-time">🗓️ Oct – Feb</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#FF6B2B11,#1A0A0022)">
+            🕌 <span class="rc-cat" style="color:#8B5CF6">Religious</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Pushkar, Rajasthan</div>
+            <div class="rc-name">Brahma Temple</div>
+            <div class="rc-desc">One of very few temples dedicated to Lord Brahma, situated on the sacred banks of Pushkar Lake.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">Pilgrimage</span>
+              <span class="rc-time">🗓️ Oct – Mar</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="place-detail.html" class="result-card">
+          <div class="rc-img" style="background:linear-gradient(135deg,#3D6B4F11,#E8A83822)">
+            🌅 <span class="rc-cat" style="color:var(--moss)">Nature</span>
+          </div>
+          <div class="rc-body">
+            <div class="rc-state">📍 Jaisalmer, Rajasthan</div>
+            <div class="rc-name">Jaisalmer Fort</div>
+            <div class="rc-desc">A living fort rising from the Thar Desert, where a quarter of the city's population still resides inside its golden walls.</div>
+            <div class="rc-footer">
+              <span class="rc-tag">UNESCO</span>
+              <span class="rc-time">🗓️ Nov – Feb</span>
+              <span class="rc-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- NO RESULTS -->
+      <div class="no-results" id="no-results">
+        <span>🔍</span>
+        <h3>No results found</h3>
+        <p>Try searching for a state name, city, or category like "heritage" or "adventure"</p>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="pagination">
+        <button class="pg-btn active">1</button>
+        <button class="pg-btn">2</button>
+        <button class="pg-btn">3</button>
+        <button class="pg-btn">→</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function doSearch() {
+      const q = document.getElementById('search-input').value.trim();
+      if (!q) return;
+      document.getElementById('query-display').textContent = q;
+      document.getElementById('query-tag').textContent = q;
+      document.getElementById('result-sub').textContent = `Showing results for "${q}"`;
+    }
+
+    function setQuery(q) {
+      document.getElementById('search-input').value = q;
+      doSearch();
+    }
+
+    function toggleFilter(el) {
+      const check = el.querySelector('.fo-check');
+      check.classList.toggle('checked');
+    }
+
+    function clearFilters() {
+      document.querySelectorAll('.fo-check').forEach(c => c.classList.remove('checked'));
+    }
+
+    document.getElementById('search-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doSearch();
+    });
+  </script>
+
+</body>
+</html>

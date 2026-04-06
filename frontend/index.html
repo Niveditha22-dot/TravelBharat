@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TravelBharat – Explore India State by State</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --saffron: #FF6B2B;
+      --deep: #1A0A00;
+      --gold: #E8A838;
+      --cream: #FDF6EC;
+      --moss: #3D6B4F;
+      --text: #2C1A0E;
+      --muted: #8C6D52;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(253,246,236,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(232,168,56,0.2);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; color: var(--saffron);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--moss); font-style: italic; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--text);
+      font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--saffron); }
+    .nav-cta {
+      background: var(--saffron); color: white;
+      padding: 0.6rem 1.4rem; border-radius: 2rem;
+      text-decoration: none; font-size: 0.85rem; font-weight: 500;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--deep); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 4rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(255,107,43,0.08) 0%, transparent 70%),
+                  radial-gradient(ellipse at 20% 80%, rgba(61,107,79,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-text { position: relative; z-index: 2; }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,107,43,0.12);
+      color: var(--saffron); font-size: 0.78rem;
+      font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.4rem 1rem; border-radius: 2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,107,43,0.25);
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 5vw, 5rem);
+      line-height: 1.1; color: var(--deep);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em {
+      font-style: italic; color: var(--saffron);
+      display: block;
+    }
+    .hero p {
+      font-size: 1.05rem; color: var(--muted);
+      line-height: 1.7; max-width: 440px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--saffron); color: white;
+      padding: 0.9rem 2rem; border-radius: 2rem;
+      text-decoration: none; font-weight: 500;
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--deep); transform: translateY(-2px); }
+    .btn-secondary {
+      border: 1.5px solid var(--gold); color: var(--text);
+      padding: 0.9rem 2rem; border-radius: 2rem;
+      text-decoration: none; font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--gold); color: white; }
+
+    .hero-stats {
+      display: flex; gap: 2.5rem; margin-top: 3rem;
+      padding-top: 2rem; border-top: 1px solid rgba(140,109,82,0.2);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; color: var(--saffron);
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+
+    /* Hero Visual */
+    .hero-visual {
+      position: relative; display: flex;
+      justify-content: center; align-items: center;
+    }
+    .india-map-container {
+      position: relative; width: 480px; height: 520px;
+    }
+    .map-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at center, rgba(255,107,43,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .india-svg {
+      width: 100%; height: 100%;
+      filter: drop-shadow(0 20px 60px rgba(255,107,43,0.2));
+    }
+    /* Floating Cards */
+    .float-card {
+      position: absolute;
+      background: white;
+      border-radius: 1rem; padding: 0.8rem 1.2rem;
+      box-shadow: 0 8px 32px rgba(26,10,0,0.12);
+      display: flex; align-items: center; gap: 0.7rem;
+      animation: floatY 3s ease-in-out infinite;
+      white-space: nowrap;
+    }
+    .float-card:nth-child(2) { animation-delay: -1s; top: 10%; right: -5%; }
+    .float-card:nth-child(3) { animation-delay: -2s; bottom: 20%; left: -8%; }
+    .float-card:nth-child(4) { animation-delay: -0.5s; top: 50%; right: -10%; }
+    .float-icon { font-size: 1.4rem; }
+    .float-title { font-size: 0.8rem; font-weight: 600; color: var(--deep); }
+    .float-sub { font-size: 0.7rem; color: var(--muted); }
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ── SEARCH ── */
+    .search-section {
+      padding: 2rem 4rem 4rem;
+      display: flex; justify-content: center;
+    }
+    .search-box {
+      background: white;
+      border-radius: 2rem; padding: 0.6rem 0.6rem 0.6rem 2rem;
+      display: flex; align-items: center; gap: 1rem;
+      box-shadow: 0 8px 40px rgba(26,10,0,0.1);
+      width: 100%; max-width: 680px;
+      border: 1.5px solid rgba(232,168,56,0.2);
+    }
+    .search-box input {
+      flex: 1; border: none; outline: none;
+      font-size: 1rem; color: var(--text);
+      background: transparent; font-family: 'DM Sans', sans-serif;
+    }
+    .search-box input::placeholder { color: var(--muted); }
+    .search-btn {
+      background: var(--saffron); color: white;
+      border: none; border-radius: 1.5rem;
+      padding: 0.75rem 1.8rem; font-size: 0.9rem;
+      font-weight: 500; cursor: pointer;
+      transition: background 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .search-btn:hover { background: var(--deep); }
+
+    /* ── CATEGORIES ── */
+    .categories {
+      padding: 2rem 4rem 5rem;
+      text-align: center;
+    }
+    .section-label {
+      font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--saffron); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      color: var(--deep); margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: var(--muted); max-width: 500px;
+      margin: 0 auto 3rem; line-height: 1.6;
+    }
+    .cat-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem; max-width: 1100px; margin: 0 auto;
+    }
+    .cat-card {
+      background: white; border-radius: 1.5rem;
+      padding: 2rem 1.5rem; text-align: center;
+      cursor: pointer; transition: all 0.3s;
+      border: 1.5px solid rgba(232,168,56,0.15);
+      text-decoration: none; color: inherit;
+    }
+    .cat-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(255,107,43,0.15);
+      border-color: var(--saffron);
+    }
+    .cat-emoji { font-size: 2.8rem; margin-bottom: 1rem; display: block; }
+    .cat-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; color: var(--deep); margin-bottom: 0.4rem;
+    }
+    .cat-count { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── STATES ── */
+    .states-section { padding: 2rem 4rem 6rem; }
+    .states-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-end; margin-bottom: 3rem;
+    }
+    .view-all {
+      color: var(--saffron); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500;
+      border-bottom: 1px solid var(--saffron);
+      padding-bottom: 2px; transition: opacity 0.2s;
+    }
+    .view-all:hover { opacity: 0.7; }
+    .states-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .state-card {
+      border-radius: 1.5rem; overflow: hidden;
+      position: relative; cursor: pointer;
+      text-decoration: none; color: inherit;
+      height: 220px;
+      transition: transform 0.3s;
+    }
+    .state-card:hover { transform: scale(1.02); }
+    .state-card:hover .state-overlay { opacity: 1; }
+    .state-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      background: linear-gradient(135deg, var(--saffron), var(--gold));
+    }
+    .state-bg {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+    }
+    .state-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(26,10,0,0.85) 0%, transparent 60%);
+      opacity: 0.7; transition: opacity 0.3s;
+    }
+    .state-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.5rem;
+    }
+    .state-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; color: white; display: block;
+    }
+    .state-places { font-size: 0.78rem; color: rgba(255,255,255,0.7); margin-top: 0.2rem; }
+    .state-tag {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      color: white; font-size: 0.7rem;
+      padding: 0.3rem 0.7rem; border-radius: 1rem;
+    }
+
+    /* ── FEATURED ── */
+    .featured { padding: 2rem 4rem 6rem; background: var(--deep); }
+    .featured .section-label { color: var(--gold); }
+    .featured .section-title { color: white; }
+    .featured .section-sub { color: rgba(255,255,255,0.5); }
+    .featured-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+    }
+    .feat-card {
+      border-radius: 1.5rem; overflow: hidden;
+      position: relative; min-height: 340px;
+      cursor: pointer; transition: transform 0.3s;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .feat-card:hover { transform: scale(1.02); }
+    .feat-bg {
+      width: 100%; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem;
+    }
+    .feat-card:first-child .feat-bg { height: 280px; font-size: 7rem; }
+    .feat-body { padding: 1.5rem; }
+    .feat-cat {
+      font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.5rem;
+    }
+    .feat-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; color: white; margin-bottom: 0.4rem;
+    }
+    .feat-loc { font-size: 0.8rem; color: rgba(255,255,255,0.45); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--deep); color: rgba(255,255,255,0.5);
+      padding: 3rem 4rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center; font-size: 0.85rem;
+    }
+    footer .logo { color: var(--gold); font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
+    footer p { margin-top: 0.5rem; }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text > * { animation: fadeUp 0.7s ease forwards; opacity: 0; }
+    .hero-text > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-text > *:nth-child(2) { animation-delay: 0.25s; }
+    .hero-text > *:nth-child(3) { animation-delay: 0.4s; }
+    .hero-text > *:nth-child(4) { animation-delay: 0.55s; }
+    .hero-text > *:nth-child(5) { animation-delay: 0.7s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 2rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; text-align: center; }
+      .hero p { margin: 0 auto 2rem; }
+      .hero-btns { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .hero-visual { display: none; }
+      .search-section, .categories, .states-section { padding-left: 2rem; padding-right: 2rem; }
+      .cat-grid { grid-template-columns: repeat(2,1fr); }
+      .featured { padding: 2rem 2rem 4rem; }
+      .featured-grid { grid-template-columns: 1fr; }
+      footer { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Travel<span>Bharat</span></div>
+    <ul class="nav-links">
+      <li><a href="#">Explore</a></li>
+      <li><a href="#">States</a></li>
+      <li><a href="#">Categories</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <a href="#" class="nav-cta">Start Exploring →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <span class="hero-tag">🇮🇳 Incredible India</span>
+      <h1>Discover Every<em>Corner of India</em></h1>
+      <p>From the snow-capped peaks of Himachal to the backwaters of Kerala — explore every state, every city, every hidden gem of India in one place.</p>
+      <div class="hero-btns">
+        <a href="#states" class="btn-primary">Explore States →</a>
+        <a href="#categories" class="btn-secondary">Browse Categories</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">28+</div>
+          <div class="stat-label">States & UTs</div>
+        </div>
+        <div>
+          <div class="stat-num">500+</div>
+          <div class="stat-label">Destinations</div>
+        </div>
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label">Categories</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- India Map SVG -->
+    <div class="hero-visual">
+      <div class="india-map-container">
+        <div class="map-bg"></div>
+        <svg class="india-svg" viewBox="0 0 400 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Simplified India silhouette -->
+          <path d="M160 20 L200 15 L240 25 L270 40 L290 70 L300 100 L310 130 L320 160 L330 190 L325 220 L315 250 L300 275 L280 300 L260 320 L245 345 L235 370 L225 395 L215 420 L210 440 L205 420 L195 395 L185 370 L175 345 L160 320 L140 300 L120 280 L100 260 L85 235 L75 205 L70 175 L75 145 L80 115 L90 90 L105 65 L125 45 Z" 
+                fill="url(#indiaGrad)" opacity="0.9"/>
+          <!-- Northeast bump -->
+          <path d="M300 100 L330 95 L355 105 L360 125 L345 140 L320 135 L310 130 Z"
+                fill="url(#indiaGrad)" opacity="0.9"/>
+          <!-- Dots for cities -->
+          <circle cx="200" cy="150" r="5" fill="#FF6B2B" opacity="0.9"/>
+          <circle cx="150" cy="200" r="4" fill="#E8A838" opacity="0.8"/>
+          <circle cx="250" cy="180" r="4" fill="#3D6B4F" opacity="0.8"/>
+          <circle cx="175" cy="280" r="4" fill="#FF6B2B" opacity="0.7"/>
+          <circle cx="210" cy="340" r="3" fill="#E8A838" opacity="0.7"/>
+          <!-- Pulse rings -->
+          <circle cx="200" cy="150" r="12" stroke="#FF6B2B" stroke-width="1.5" opacity="0.3" fill="none">
+            <animate attributeName="r" values="8;20;8" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <defs>
+            <linearGradient id="indiaGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF6B2B" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#3D6B4F" stop-opacity="0.25"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <!-- Floating cards -->
+        <div class="float-card" style="top:8%;right:-5%">
+          <span class="float-icon">🏯</span>
+          <div><div class="float-title">Rajasthan</div><div class="float-sub">Heritage Forts</div></div>
+        </div>
+        <div class="float-card" style="bottom:22%;left:-10%">
+          <span class="float-icon">🌴</span>
+          <div><div class="float-title">Kerala</div><div class="float-sub">Backwaters</div></div>
+        </div>
+        <div class="float-card" style="top:48%;right:-12%">
+          <span class="float-icon">🏔️</span>
+          <div><div class="float-title">Himachal</div><div class="float-sub">Snow Peaks</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <section class="search-section">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" placeholder="Search states, cities, or tourist places..."/>
+      <button class="search-btn">Search</button>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="categories" id="categories">
+    <div class="section-label">Explore By Type</div>
+    <h2 class="section-title">What Kind of Explorer Are You?</h2>
+    <p class="section-sub">Filter destinations by your travel style — from ancient heritage to wild adventures.</p>
+    <div class="cat-grid">
+      <a href="#" class="cat-card">
+        <span class="cat-emoji">🏛️</span>
+        <div class="cat-name">Heritage</div>
+        <div class="cat-count">120+ Places</div>
+      </a>
+      <a href="#" class="cat-card">
+        <span class="cat-emoji">🌿</span>
+        <div class="cat-name">Nature</div>
+        <div class="cat-count">180+ Places</div>
+      </a>
+      <a href="#" class="cat-card">
+        <span class="cat-emoji">🕌</span>
+        <div class="cat-name">Religious</div>
+        <div class="cat-count">150+ Places</div>
+      </a>
+      <a href="#" class="cat-card">
+        <span class="cat-emoji">🧗</span>
+        <div class="cat-name">Adventure</div>
+        <div class="cat-count">90+ Places</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- STATES -->
+  <section class="states-section" id="states">
+    <div class="states-header">
+      <div>
+        <div class="section-label">Explore India</div>
+        <h2 class="section-title">Browse by State</h2>
+      </div>
+      <a href="states.html" class="view-all">View All States →</a>
+    </div>
+    <div class="states-grid">
+      <a href="state-detail.html" class="state-card">
+        <div class="state-bg" style="background: linear-gradient(135deg,#FF6B2B22,#E8A83833)">🏯</div>
+        <div class="state-overlay"></div>
+        <div class="state-info">
+          <span class="state-name">Rajasthan</span>
+          <div class="state-places">42 tourist places</div>
+        </div>
+        <span class="state-tag">Heritage</span>
+      </a>
+      <a href="state-detail.html" class="state-card">
+        <div class="state-bg" style="background: linear-gradient(135deg,#3D6B4F22,#1A0A0033)">🌴</div>
+        <div class="state-overlay"></div>
+        <div class="state-info">
+          <span class="state-name">Kerala</span>
+          <div class="state-places">38 tourist places</div>
+        </div>
+        <span class="state-tag">Nature</span>
+      </a>
+      <a href="state-detail.html" class="state-card">
+        <div class="state-bg" style="background: linear-gradient(135deg,#E8A83822,#FF6B2B22)">🏔️</div>
+        <div class="state-overlay"></div>
+        <div class="state-info">
+          <span class="state-name">Himachal Pradesh</span>
+          <div class="state-places">29 tourist places</div>
+        </div>
+        <span class="state-tag">Adventure</span>
+      </a>
+      <a href="state-detail.html" class="state-card">
+        <div class="state-bg" style="background: linear-gradient(135deg,#FF6B2B11,#3D6B4F22)">🕌</div>
+        <div class="state-overlay"></div>
+        <div class="state-info">
+          <span class="state-name">Uttar Pradesh</span>
+          <div class="state-places">55 tourist places</div>
+        </div>
+        <span class="state-tag">Religious</span>
+      </a>
+      <a href="state-detail.html" class="state-card">
+        <div class="state-bg" style="background: linear-gradient(135deg,#E8A83822,#1A0A0022)">🌊</div>
+        <div class="state-overlay"></div>
+        <div class="state-info">
+          <span class="state-name">Goa</span>
+          <div class="state-places">18 tourist places</div>
+        </div>
+        <span class="state-tag">Nature</span>
+      </a>
+      <a href="state-detail.html" class="state-card">
+        <div class="state-bg" style="background: linear-gradient(135deg,#FF6B2B22,#3D6B4F11)">🗿</div>
+        <div class="state-overlay"></div>
+        <div class="state-info">
+          <span class="state-name">Tamil Nadu</span>
+          <div class="state-places">46 tourist places</div>
+        </div>
+        <span class="state-tag">Heritage</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  <section class="featured" id="featured">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <div class="section-label">Editor's Pick</div>
+      <h2 class="section-title">Must-Visit Destinations</h2>
+      <p class="section-sub">Handpicked places that every traveller should experience at least once.</p>
+    </div>
+    <div class="featured-grid">
+      <a href="place-detail.html" class="feat-card" style="text-decoration:none">
+        <div class="feat-bg" style="background:linear-gradient(135deg,#FF6B2B33,#E8A83833)">🕌</div>
+        <div class="feat-body">
+          <div class="feat-cat">Heritage • Agra, UP</div>
+          <div class="feat-name">Taj Mahal</div>
+          <div class="feat-loc">📍 Agra, Uttar Pradesh · Best: Oct–Mar</div>
+        </div>
+      </a>
+      <a href="place-detail.html" class="feat-card" style="text-decoration:none">
+        <div class="feat-bg" style="background:linear-gradient(135deg,#3D6B4F33,#1A0A0033)">🌿</div>
+        <div class="feat-body">
+          <div class="feat-cat">Nature • Kerala</div>
+          <div class="feat-name">Munnar Hills</div>
+          <div class="feat-loc">📍 Idukki, Kerala · Best: Sep–Mar</div>
+        </div>
+      </a>
+      <a href="place-detail.html" class="feat-card" style="text-decoration:none">
+        <div class="feat-bg" style="background:linear-gradient(135deg,#E8A83833,#FF6B2B22)">🏯</div>
+        <div class="feat-body">
+          <div class="feat-cat">Heritage • Rajasthan</div>
+          <div class="feat-name">Amber Fort</div>
+          <div class="feat-loc">📍 Jaipur, Rajasthan · Best: Nov–Feb</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="logo">Travel<span style="color:var(--saffron);font-style:italic">Bharat</span></span>
+    <p>A digital travel encyclopedia of India · Built with ❤️ for Unified Mentors Internship</p>
+    <p style="margin-top:0.5rem; font-size:0.75rem; opacity:0.4;">© 2025 TravelBharat · All rights reserved</p>
+  </footer>
+
+</body>
+</html>

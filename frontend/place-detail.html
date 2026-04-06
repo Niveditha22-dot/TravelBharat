@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amber Fort – TravelBharat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,700;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --saffron: #FF6B2B;
+      --deep: #1A0A00;
+      --gold: #E8A838;
+      --cream: #FDF6EC;
+      --moss: #3D6B4F;
+      --text: #2C1A0E;
+      --muted: #8C6D52;
+      --light: #F5EDE0;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.1rem 4rem;
+      background: rgba(253,246,236,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(232,168,56,0.2);
+    }
+    .logo {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.5rem; color: var(--saffron); text-decoration: none;
+    }
+    .logo span { color: var(--moss); font-style: italic; }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; color: var(--muted);
+    }
+    .breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--saffron); }
+    .breadcrumb .cur { color: var(--saffron); font-weight: 600; }
+    .nav-share {
+      background: var(--deep); color: white;
+      padding: 0.5rem 1.2rem; border-radius: 2rem;
+      font-size: 0.82rem; font-weight: 500;
+      cursor: pointer; border: none;
+      font-family: 'Nunito', sans-serif;
+      transition: background 0.2s;
+    }
+    .nav-share:hover { background: var(--saffron); }
+
+    /* HERO */
+    .place-hero {
+      margin-top: 68px;
+      height: 560px;
+      position: relative;
+      display: flex; align-items: flex-end;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 50%, rgba(255,107,43,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 30%, rgba(232,168,56,0.15) 0%, transparent 50%),
+        linear-gradient(160deg, #2C1A0E 0%, #1A0A00 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-emoji {
+      font-size: 22rem; opacity: 0.08;
+      position: absolute; right: 5%; top: 50%;
+      transform: translateY(-50%);
+      user-select: none;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(26,10,0,0.95) 0%, rgba(26,10,0,0.3) 50%, transparent 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 3rem 4rem; width: 100%;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: flex-end; gap: 2rem;
+    }
+    .place-category {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(255,107,43,0.25);
+      border: 1px solid rgba(255,107,43,0.4);
+      color: var(--gold); font-size: 0.72rem;
+      font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 0.3rem 0.9rem; border-radius: 2rem;
+      margin-bottom: 1rem; width: fit-content;
+    }
+    .hero-content h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      color: white; line-height: 1.05;
+      margin-bottom: 0.8rem;
+    }
+    .hero-content h1 em { color: var(--gold); font-style: italic; display: block; }
+    .place-location {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.6); font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .htag {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(6px);
+      color: rgba(255,255,255,0.8);
+      font-size: 0.75rem; padding: 0.3rem 0.8rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Quick Info Box */
+    .quick-info {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 1.5rem; padding: 1.5rem;
+      display: flex; flex-direction: column; gap: 1rem;
+      min-width: 220px;
+    }
+    .qi-item { display: flex; align-items: center; gap: 0.8rem; }
+    .qi-icon { font-size: 1.3rem; }
+    .qi-label { font-size: 0.7rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.8px; }
+    .qi-val { font-size: 0.88rem; color: white; font-weight: 600; }
+
+    /* BODY LAYOUT */
+    .body-wrap {
+      max-width: 1200px; margin: 0 auto;
+      padding: 3rem 4rem;
+      display: grid; grid-template-columns: 1fr 340px;
+      gap: 3rem;
+    }
+
+    /* GALLERY */
+    .gallery-strip {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 0.6rem; margin-bottom: 3rem;
+    }
+    .gallery-item {
+      border-radius: 0.8rem; overflow: hidden;
+      aspect-ratio: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; transition: transform 0.2s;
+      border: 2px solid transparent;
+    }
+    .gallery-item:hover { transform: scale(1.05); border-color: var(--saffron); }
+    .gallery-item.active { border-color: var(--saffron); }
+    .gallery-item:nth-child(1) { background: linear-gradient(135deg,#FF6B2B22,#E8A83833); }
+    .gallery-item:nth-child(2) { background: linear-gradient(135deg,#3D6B4F22,#1A0A0033); }
+    .gallery-item:nth-child(3) { background: linear-gradient(135deg,#E8A83822,#FF6B2B22); }
+    .gallery-item:nth-child(4) { background: linear-gradient(135deg,#1A0A0022,#3D6B4F22); }
+    .gallery-item:nth-child(5) { background: linear-gradient(135deg,#FF6B2B11,#E8A83844); }
+
+    /* CONTENT SECTIONS */
+    .content-section { margin-bottom: 2.5rem; }
+    .sec-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.4rem; color: var(--deep);
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid rgba(232,168,56,0.3);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .sec-title span { color: var(--saffron); }
+    .content-section p {
+      color: var(--muted); line-height: 1.8;
+      font-size: 0.95rem; margin-bottom: 0.8rem;
+    }
+
+    /* INFO GRID */
+    .info-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 2.5rem;
+    }
+    .info-tile {
+      background: white; border-radius: 1rem;
+      padding: 1.2rem; text-align: center;
+      border: 1.5px solid rgba(232,168,56,0.12);
+      transition: all 0.2s;
+    }
+    .info-tile:hover { border-color: var(--saffron); transform: translateY(-2px); }
+    .info-tile-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .info-tile-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 0.3rem; }
+    .info-tile-val { font-size: 0.9rem; font-weight: 600; color: var(--deep); }
+
+    /* HIGHLIGHTS */
+    .highlights-list {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+    .highlight-item {
+      display: flex; align-items: flex-start; gap: 0.8rem;
+      background: white; border-radius: 1rem; padding: 1rem;
+      border: 1.5px solid rgba(232,168,56,0.1);
+    }
+    .hi-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .hi-text { font-size: 0.85rem; color: var(--text); line-height: 1.4; }
+    .hi-text strong { display: block; font-weight: 600; margin-bottom: 0.1rem; }
+
+    /* NEARBY */
+    .nearby-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .nearby-item {
+      display: flex; align-items: center; gap: 1rem;
+      background: white; border-radius: 1rem; padding: 1rem 1.2rem;
+      text-decoration: none; color: inherit;
+      border: 1.5px solid rgba(232,168,56,0.1);
+      transition: all 0.2s;
+    }
+    .nearby-item:hover { border-color: var(--saffron); transform: translateX(4px); }
+    .nearby-emoji { font-size: 1.8rem; }
+    .nearby-info { flex: 1; }
+    .nearby-name { font-weight: 600; font-size: 0.9rem; color: var(--deep); }
+    .nearby-dist { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+    .nearby-tag {
+      font-size: 0.7rem; padding: 0.2rem 0.6rem;
+      border-radius: 1rem; background: rgba(255,107,43,0.1);
+      color: var(--saffron); font-weight: 500;
+    }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+    .s-card {
+      background: white; border-radius: 1.5rem; padding: 1.5rem;
+      border: 1.5px solid rgba(232,168,56,0.12);
+    }
+    .s-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.1rem; color: var(--deep);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px solid rgba(140,109,82,0.15);
+    }
+    .s-row {
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(140,109,82,0.07);
+      font-size: 0.83rem;
+    }
+    .s-row:last-child { border-bottom: none; }
+    .s-key { color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+    .s-val { color: var(--text); font-weight: 500; text-align: right; max-width: 55%; }
+
+    /* TIPS */
+    .tips-list { display: flex; flex-direction: column; gap: 0.7rem; }
+    .tip-item {
+      display: flex; gap: 0.7rem; align-items: flex-start;
+      font-size: 0.83rem; color: var(--muted); line-height: 1.5;
+    }
+    .tip-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--saffron); flex-shrink: 0; margin-top: 0.4rem;
+    }
+
+    /* MAP PLACEHOLDER */
+    .map-box {
+      background: linear-gradient(135deg, rgba(61,107,79,0.1), rgba(232,168,56,0.1));
+      border-radius: 1rem; height: 160px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      border: 1.5px dashed rgba(140,109,82,0.3);
+      cursor: pointer; transition: all 0.2s; gap: 0.5rem;
+    }
+    .map-box:hover { border-color: var(--saffron); }
+    .map-box span { font-size: 2.5rem; }
+    .map-box p { font-size: 0.8rem; color: var(--muted); }
+    .map-link {
+      display: block; text-align: center;
+      color: var(--saffron); font-size: 0.82rem;
+      font-weight: 600; margin-top: 0.8rem;
+      text-decoration: none;
+    }
+
+    /* CTA */
+    .cta-box {
+      background: linear-gradient(135deg, var(--saffron), var(--gold));
+      border-radius: 1.5rem; padding: 1.8rem;
+      text-align: center; color: white;
+    }
+    .cta-box h3 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.2rem; margin-bottom: 0.5rem;
+    }
+    .cta-box p { font-size: 0.82rem; opacity: 0.85; margin-bottom: 1.2rem; line-height: 1.5; }
+    .cta-btn {
+      background: white; color: var(--saffron);
+      border: none; border-radius: 2rem;
+      padding: 0.7rem 1.8rem; font-size: 0.85rem;
+      font-weight: 700; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: transform 0.2s;
+    }
+    .cta-btn:hover { transform: scale(1.03); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .hero-content > * { opacity: 0; transform: translateY(25px); animation: fadeUp 0.6s ease forwards; }
+    .hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-content > *:nth-child(2) { animation-delay: 0.25s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-share { display: none; }
+      .hero-content { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+      .quick-info { display: none; }
+      .body-wrap { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+      .sidebar { display: none; }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
+      .highlights-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">Travel<span>Bharat</span></a>
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> ›
+      <a href="states.html">States</a> ›
+      <a href="state-detail.html">Rajasthan</a> ›
+      <span class="cur">Amber Fort</span>
+    </div>
+    <button class="nav-share">🔗 Share</button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="place-hero">
+    <div class="hero-bg">
+      <div class="hero-emoji">🏯</div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div>
+        <div class="place-category">🏛️ Heritage Site</div>
+        <h1>Amber Fort<em>Amer Ka Kila</em></h1>
+        <div class="place-location">📍 Amer, Jaipur, Rajasthan</div>
+        <div class="hero-tags">
+          <span class="htag">UNESCO Listed</span>
+          <span class="htag">Mughal Architecture</span>
+          <span class="htag">Hill Fort</span>
+          <span class="htag">Light & Sound Show</span>
+        </div>
+      </div>
+      <div class="quick-info">
+        <div class="qi-item">
+          <span class="qi-icon">🕐</span>
+          <div><div class="qi-label">Open Hours</div><div class="qi-val">8:00 AM – 5:30 PM</div></div>
+        </div>
+        <div class="qi-item">
+          <span class="qi-icon">🎟️</span>
+          <div><div class="qi-label">Entry Fee</div><div class="qi-val">₹100 (Indian) / ₹500 (Foreign)</div></div>
+        </div>
+        <div class="qi-item">
+          <span class="qi-icon">⏱️</span>
+          <div><div class="qi-label">Time Needed</div><div class="qi-val">2 – 3 Hours</div></div>
+        </div>
+        <div class="qi-item">
+          <span class="qi-icon">📅</span>
+          <div><div class="qi-label">Best Season</div><div class="qi-val">October – February</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <div class="body-wrap">
+    <div class="left-col">
+
+      <!-- GALLERY -->
+      <div class="gallery-strip">
+        <div class="gallery-item active">🏯</div>
+        <div class="gallery-item">🌅</div>
+        <div class="gallery-item">🪞</div>
+        <div class="gallery-item">🐘</div>
+        <div class="gallery-item">🌙</div>
+      </div>
+
+      <!-- INFO TILES -->
+      <div class="info-grid">
+        <div class="info-tile">
+          <div class="info-tile-icon">🎟️</div>
+          <div class="info-tile-label">Entry Fee</div>
+          <div class="info-tile-val">₹100 / ₹500</div>
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-icon">🕐</div>
+          <div class="info-tile-label">Timings</div>
+          <div class="info-tile-val">8 AM – 5:30 PM</div>
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-icon">⏱️</div>
+          <div class="info-tile-label">Duration</div>
+          <div class="info-tile-val">2 – 3 Hours</div>
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-icon">📅</div>
+          <div class="info-tile-label">Best Time</div>
+          <div class="info-tile-val">Oct – Feb</div>
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-icon">🌡️</div>
+          <div class="info-tile-label">Climate</div>
+          <div class="info-tile-val">Semi-Arid</div>
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-icon">🗣️</div>
+          <div class="info-tile-label">Language</div>
+          <div class="info-tile-val">Hindi / Rajasthani</div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="content-section">
+        <div class="sec-title"><span>📖</span> About Amber Fort</div>
+        <p>Amber Fort, also known as Amer Fort, is a magnificent hilltop fortress located just 11 km from Jaipur. Built in 1592 by Raja Man Singh I, it stands as one of the finest examples of Rajput military architecture blended with Mughal and Hindu styles.</p>
+        <p>The fort is constructed using pale yellow and pink sandstone and white marble. Its grand structure overlooks the Maota Lake, offering breathtaking reflections at sunrise. The complex consists of four sections — each with its own courtyard — including the grand Diwan-i-Aam (Hall of Public Audience), the ornate Sheesh Mahal (Mirror Palace), and the Sukh Niwas with its unique air-cooling water channels.</p>
+        <p>In 2013, Amber Fort was designated a UNESCO World Heritage Site as part of the Hill Forts of Rajasthan group. Today, it remains one of the most visited monuments in India.</p>
+      </div>
+
+      <!-- HISTORICAL SIGNIFICANCE -->
+      <div class="content-section">
+        <div class="sec-title"><span>🏛️</span> Historical Significance</div>
+        <p>Amber was the capital of the Kachwaha Rajput clan for several centuries before Jaipur was founded. The fort served as the royal residence of the Rajput Maharajas until the 18th century. Its strategic hilltop location made it an impregnable fortress, and its grand interiors reflected the immense wealth and artistic sophistication of its rulers.</p>
+        <p>Emperor Akbar was a frequent visitor, and the alliance between the Kachwahas and the Mughal Empire was symbolized in the fort's unique architectural style — a harmonious fusion of two great traditions.</p>
+      </div>
+
+      <!-- HIGHLIGHTS -->
+      <div class="content-section">
+        <div class="sec-title"><span>✨</span> Must-See Highlights</div>
+        <div class="highlights-list">
+          <div class="highlight-item">
+            <span class="hi-icon">🪞</span>
+            <div class="hi-text"><strong>Sheesh Mahal</strong>The breathtaking Mirror Palace with thousands of tiny mirrors that illuminate with a single candle flame.</div>
+          </div>
+          <div class="highlight-item">
+            <span class="hi-icon">🏛️</span>
+            <div class="hi-text"><strong>Diwan-i-Aam</strong>The grand Hall of Public Audience where the Maharaja addressed citizens and foreign dignitaries.</div>
+          </div>
+          <div class="highlight-item">
+            <span class="hi-icon">🌺</span>
+            <div class="hi-text"><strong>Sukh Niwas</strong>The pleasure palace with a unique cooling system using water channels — ancient natural air conditioning!</div>
+          </div>
+          <div class="highlight-item">
+            <span class="hi-icon">🌅</span>
+            <div class="hi-text"><strong>Maota Lake View</strong>Stunning reflections of the fort in the lake below, especially magical at sunrise and golden hour.</div>
+          </div>
+          <div class="highlight-item">
+            <span class="hi-icon">🐘</span>
+            <div class="hi-text"><strong>Elephant Ride</strong>Traditional elephant rides up to the fort entrance — a royal experience (check current availability).</div>
+          </div>
+          <div class="highlight-item">
+            <span class="hi-icon">💡</span>
+            <div class="hi-text"><strong>Light & Sound Show</strong>Evening show narrating the fort's history through spectacular lighting across the walls.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEARBY -->
+      <div class="content-section">
+        <div class="sec-title"><span>📍</span> Nearby Attractions</div>
+        <div class="nearby-list">
+          <a href="place-detail.html" class="nearby-item">
+            <span class="nearby-emoji">🌊</span>
+            <div class="nearby-info">
+              <div class="nearby-name">Jaigarh Fort</div>
+              <div class="nearby-dist">📍 1 km away · Jaipur</div>
+            </div>
+            <span class="nearby-tag">Heritage</span>
+          </a>
+          <a href="place-detail.html" class="nearby-item">
+            <span class="nearby-emoji">🏙️</span>
+            <div class="nearby-info">
+              <div class="nearby-name">Hawa Mahal</div>
+              <div class="nearby-dist">📍 11 km away · Jaipur</div>
+            </div>
+            <span class="nearby-tag">Heritage</span>
+          </a>
+          <a href="place-detail.html" class="nearby-item">
+            <span class="nearby-emoji">🏯</span>
+            <div class="nearby-info">
+              <div class="nearby-name">Nahargarh Fort</div>
+              <div class="nearby-dist">📍 15 km away · Jaipur</div>
+            </div>
+            <span class="nearby-tag">Heritage</span>
+          </a>
+          <a href="place-detail.html" class="nearby-item">
+            <span class="nearby-emoji">🌿</span>
+            <div class="nearby-info">
+              <div class="nearby-name">Sisodia Rani Garden</div>
+              <div class="nearby-dist">📍 8 km away · Jaipur</div>
+            </div>
+            <span class="nearby-tag">Nature</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="s-card">
+        <div class="s-title">ℹ️ Quick Details</div>
+        <div class="s-row"><span class="s-key">📍 Location</span><span class="s-val">Amer, Jaipur, Rajasthan</span></div>
+        <div class="s-row"><span class="s-key">🏛️ Built In</span><span class="s-val">1592 AD</span></div>
+        <div class="s-row"><span class="s-key">👑 Built By</span><span class="s-val">Raja Man Singh I</span></div>
+        <div class="s-row"><span class="s-key">🎨 Style</span><span class="s-val">Rajput + Mughal</span></div>
+        <div class="s-row"><span class="s-key">🌐 UNESCO</span><span class="s-val">Yes (2013)</span></div>
+        <div class="s-row"><span class="s-key">📸 Photography</span><span class="s-val">Allowed (free)</span></div>
+        <div class="s-row"><span class="s-key">♿ Accessible</span><span class="s-val">Partial</span></div>
+      </div>
+
+      <div class="s-card">
+        <div class="s-title">🗺️ Location Map</div>
+        <div class="map-box">
+          <span>🗺️</span>
+          <p>Amber Fort, Jaipur</p>
+        </div>
+        <a href="https://maps.google.com/?q=Amber+Fort+Jaipur" target="_blank" class="map-link">📍 Open in Google Maps →</a>
+      </div>
+
+      <div class="s-card">
+        <div class="s-title">💡 Travel Tips</div>
+        <div class="tips-list">
+          <div class="tip-item"><div class="tip-dot"></div>Visit early morning (8–10 AM) to avoid crowds and heat</div>
+          <div class="tip-item"><div class="tip-dot"></div>Wear comfortable footwear — lots of stairs and uneven paths</div>
+          <div class="tip-item"><div class="tip-dot"></div>Carry water and sunscreen especially in summer months</div>
+          <div class="tip-item"><div class="tip-dot"></div>Book tickets online to skip the queue at entry gate</div>
+          <div class="tip-item"><div class="tip-dot"></div>Don't miss the evening Light & Sound Show at 7:30 PM</div>
+          <div class="tip-item"><div class="tip-dot"></div>Hire an official guide at the gate for the best experience</div>
+        </div>
+      </div>
+
+      <div class="cta-box">
+        <h3>Planning a Trip? 🧳</h3>
+        <p>Explore more places in Rajasthan and create your perfect travel itinerary.</p>
+        <button class="cta-btn" onclick="window.location.href='state-detail.html'">Explore Rajasthan →</button>
+      </div>
+
+    </aside>
+  </div>
+
+</body>
+</html>
